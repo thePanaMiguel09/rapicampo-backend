@@ -11,7 +11,7 @@ import dotenv from 'dotenv'
 dotenv.config();
 
 const app = express();
-const PORT: number = parseInt(process.env.PORT || '3000', 10);
+const PORT: number = parseInt(process.env.PORT || '4000', 10);
 
 app.use(cors());
 app.use(express.json());
