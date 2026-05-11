@@ -16,7 +16,7 @@ export class ServiceRepository implements IServiceRepository {
                     estado_servicio,
                     tipo_pago,
                     valor_ofrecido,
-                    detalles_trueque,
+                    detalles_trueque
                 ) VALUES(
                     $1,
                     $2,
