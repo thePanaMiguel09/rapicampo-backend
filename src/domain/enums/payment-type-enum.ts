@@ -1,4 +1,4 @@
 export enum PaymentType {
-    'DINERO',
-    'TRUEQUE'
+    DINERO = 'DINERO',
+    TRUEQUE = 'TRUEQUE'
 }

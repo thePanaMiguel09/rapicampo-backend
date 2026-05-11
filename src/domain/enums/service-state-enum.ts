@@ -1,7 +1,7 @@
 export enum ServiceState {
-    'PUBLICADO',
-    'ACEPTADO',
-    'EN_PROCESO',
-    'COMPLETADO',
-    'CANCELADO'
+    PUBLICADO = 'PUBLICADO',
+    ACEPTADO = 'ACEPTADO',
+    EN_PROCESO = 'EN_PROCESO',
+    COMPLETADO = 'COMPLETADO',
+    CANCELADO = 'CANCELADO'
 }
