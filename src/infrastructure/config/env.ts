@@ -3,7 +3,7 @@ import dotenv from 'dotenv'
 dotenv.config();
 
 export const config = {
-    port: parseInt(process.env.PORT || '3000', 10),
+    port: parseInt(process.env.PORT || '4000', 10),
     pg_host: process.env.POSTGRES_HOST || 'postgres',
     pg_port: parseInt(process.env.POSTGRES_PORT || '5432'),
     pg_db: process.env.POSTGRES_DB || 'rappicampo',
