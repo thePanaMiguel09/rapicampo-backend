@@ -7,7 +7,7 @@ export class AuthServiceClient implements IAuthService {
 
     async validateUser(token: string): Promise<User> {
         try {
-            const response = await this.httpClient.post('http://localhost:3000/auth/me',
+            const response = await this.httpClient.post('/auth/me',
                 {},
                 {
                     headers: {
@@ -21,8 +21,8 @@ export class AuthServiceClient implements IAuthService {
                 nombre: response.data.nombre,
                 role: response.data.rol,
                 telefono: response.data.telefono,
-                modulo: response.data.modulo,
-                creado_en: response.data.creado_en
+                modulo: response.data.modulo ?? null,
+                creado_en: new Date(response.data.creado_en)
             }
 
         } catch (error: any) {
