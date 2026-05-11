@@ -47,7 +47,7 @@ export class ServiceRepository implements IServiceRepository {
         }
     }
 
-    findServieById(id: string): Promise<Service | null> {
+    findServiceById(id: string): Promise<Service | null> {
         throw new Error("Method not implemented.");
     }
 
