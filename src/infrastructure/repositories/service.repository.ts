@@ -1,8 +1,26 @@
 import { IServiceRepository } from "../../domain/ports/IServiceRepository";
 import { Service } from "../../domain/entities/Service";
 import connection from "../database/connection";
+import { ServiceState } from "../../domain/enums/service-state-enum";
+import { PaymentType } from "../../domain/enums/payment-type-enum";
 
 export class ServiceRepository implements IServiceRepository {
+
+    private mapRowToService(row: any): Service {
+        return new Service(
+            row.id_usuario_solicitante,
+            row.descripcion_servicio,
+            row.direccion_origen,
+            row.direccion_destino,
+            row.estado_servicio as ServiceState,
+            row.tipo_pago as PaymentType,
+            row.valor_ofrecido,
+            row.detalles_trueque ?? null,
+            row.updated_at ?? null,
+            row.posted_at ?? null,
+            row.id,
+        );
+    }
 
     async createService(service: Omit<Service, "id">): Promise<Service> {
 
@@ -40,7 +58,7 @@ export class ServiceRepository implements IServiceRepository {
             service.exchangeDetail];
 
             const { rows } = await connection.query(query, values);
-            return rows[0];
+            return this.mapRowToService(rows[0]);
         } catch (error) {
             console.error(error);
             throw Error('Error posting service');
