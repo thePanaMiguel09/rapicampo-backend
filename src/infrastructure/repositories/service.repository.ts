@@ -16,9 +16,9 @@ export class ServiceRepository implements IServiceRepository {
             row.tipo_pago as PaymentType,
             row.valor_ofrecido,
             row.detalles_trueque ?? null,
-            row.updated_at ?? null,
-            row.posted_at ?? null,
-            row.id,
+            row.fecha_actualizacion ?? null,
+            row.fecha_publicacion ?? null,
+            row.pk_id_servicio,
         );
     }
 
