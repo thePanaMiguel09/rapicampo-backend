@@ -7,15 +7,14 @@ class DatabasePool {
     private static instace: Pool;
 
     private constructor() { };
-
     public static getInstace(): Pool {
         if (!DatabasePool.instace) {
             DatabasePool.instace = new Pool({
-                user: process.env.pg_user,
-                host: process.env.pg_host,
-                database: process.env.pg_db,
-                password: process.env.pg_password,
-                port: parseInt(process.env.pg_port!)
+                user: process.env.DB_USER,
+                host: process.env.DB_HOST,
+                database: process.env.DB_NAME,
+                password: process.env.DB_PASS,
+                port: parseInt(process.env.DB_PORT!)
             })
         }
 
