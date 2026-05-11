@@ -7,8 +7,7 @@ export class AuthServiceClient implements IAuthService {
 
     async validateUser(token: string): Promise<User> {
         try {
-            const response = await this.httpClient.post('/auth/me',
-                {},
+            const response = await this.httpClient.get('http://localhost:3000/auth/me',
                 {
                     headers: {
                         'Authorization': `Bearer ${token}`,
