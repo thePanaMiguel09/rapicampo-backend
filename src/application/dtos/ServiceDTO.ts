@@ -9,3 +9,12 @@ export interface CreateServiceDTO {
     offeredValue: string;
     exchangeDetail?: string;
 }
+
+export interface UpdateServiceDTO {
+    serviceDescription?: string;
+    originAddress?: string;
+    destinationAddress?: string;
+    payment?: PaymentType;
+    offeredValue?: string;
+    exchangeDetail?: string;
+}
