@@ -1,4 +1,5 @@
 import { Service } from "../entities/Service";
+import { ServiceState } from "../enums/service-state-enum";
 
 export interface IServiceRepository {
     createService(service: Omit<Service, 'id'>): Promise<Service>;
