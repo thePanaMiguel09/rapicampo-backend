@@ -6,6 +6,7 @@ import { AuthServiceClient } from './infrastructure/http/AuthServiceClient';
 import { ValidateUserUseCase } from './application/use-cases/auth/ValidateUserUseCase';
 import { createAuthMiddleware } from './presentation/middleware/authMiddleware';
 import { createServiceRouter } from './presentation/routes/services.routes';
+import { createUserRouter } from './presentation/routes/users.routes';
 import { errorHandler, notFoundHandler } from './presentation/middleware/errorHandler';
 import dotenv from 'dotenv'
 dotenv.config();
@@ -27,6 +28,7 @@ app.get('/health', (_req, res) => {
 });
 
 app.use('/api/services', createServiceRouter(authMiddleware));
+app.use('/api/users', createUserRouter(authMiddleware));
 
 app.use(notFoundHandler);
 app.use(errorHandler);
