@@ -65,12 +65,111 @@ export class ServiceRepository implements IServiceRepository {
         }
     }
 
-    findServiceById(id: string): Promise<Service | null> {
-        throw new Error("Method not implemented.");
+    async findServiceById(id: string): Promise<Service | null> {
+        try {
+            const query = `
+            SELECT
+            id_usuario_solicitante, 
+            descripcion_servicio,
+            direccion_origen,
+            direccion_destino,
+            estado_servicio,
+            tipo_pago,
+            valor_ofrecido,
+            detalles_trueque,
+            fecha_publicacion,
+            fecha_actualizacion
+            FROM solicitudes.servicios
+            WHERE pk_id_servicio = $1
+        `
+
+            const values = [id];
+
+            const { rows, rowCount } = await connection.query(query, values);
+
+            if (rowCount === 0) {
+                return null;
+            }
+
+            return this.mapRowToService(rows[0]);
+
+
+        } catch (error) {
+            console.error(error);
+            throw Error('Error fething service');
+        }
     }
 
-    findAllServices(): Promise<Service[]> {
-        throw new Error("Method not implemented.");
+    async findAllServices(): Promise<Service[]> {
+        try {
+            const query = `
+            SELECT
+            pk_id_servicio,
+            id_usuario_solicitante, 
+            descripcion_servicio,
+            direccion_origen,
+            direccion_destino,
+            estado_servicio,
+            tipo_pago,
+            valor_ofrecido,
+            detalles_trueque,
+            fecha_publicacion,
+            fecha_actualizacion
+            FROM solicitudes.servicios
+            ORDER BY fecha_publicacion DESC
+        `;
+
+            const { rows } = await connection.query(query);
+            return rows.map((row) => this.mapRowToService(row));
+
+        } catch (error) {
+            console.error(error);
+            throw Error('Error fething services.')
+        }
+    }
+
+    async updateService(id: string, data: Partial<Omit<Service, "id" | "id_usuario_solicitante">>): Promise<Service> {
+        try {
+
+            const fields: string[] = [];
+            const values: any[] = [];
+            let index = 1;
+
+            const mapping: { [key: string]: string } = {
+                serviceDescription: 'descripcion_servicio',
+                originAddress: 'direccion_origen',
+                destinationAddress: 'direccion_destino',
+                serviceState: 'estado_servicio',
+                paymentMethod: 'tipo_pago',
+                offeredValue: 'valor_ofrecido',
+                exchangeDetail: 'detalles_trueque'
+            };
+
+            for (const [key, value] of Object.entries(data)) {
+                if (value !== undefined && mapping[key]) {
+                    fields.push(`${mapping[key]} = $${index}`);
+                    values.push(value);
+                    index++;
+                }
+            }
+
+            if (fields.length === 0) throw new Error("No hay campos para actualizar");
+
+            values.push(id);
+
+            const query = `
+            UPDATE solicitudes.servicios 
+            SET ${fields.join(', ')} 
+            WHERE pk_id_servicio = $${index} 
+            RETURNING *
+        `;
+
+            const { rows } = await connection.query(query, values);
+            return this.mapRowToService(rows[0]);
+        } catch (error) {
+            console.error(error)
+            throw new Error('Error updating service.');
+        }
     }
 
 }
