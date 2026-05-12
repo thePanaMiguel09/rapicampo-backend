@@ -4,7 +4,6 @@ import { successResponse } from "../interfaces/ApiResponse";
 import { FindServiceUseCase } from "../../application/use-cases/services/FindServiceUseCase";
 import { GetAllServicesUseCase } from "../../application/use-cases/services/GetAllServicesUseCase";
 import { UpdateServiceUseCase } from "../../application/use-cases/services/UpdateServiceUseCase";
-import { FetchUserServicesUseCase } from "../../application/use-cases/users/FetchUserServices";
 
 export class ServiceController {
     constructor(
