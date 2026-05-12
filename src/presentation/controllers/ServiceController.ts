@@ -4,13 +4,14 @@ import { successResponse } from "../interfaces/ApiResponse";
 import { FindServiceUseCase } from "../../application/use-cases/services/FindServiceUseCase";
 import { GetAllServicesUseCase } from "../../application/use-cases/services/GetAllServicesUseCase";
 import { UpdateServiceUseCase } from "../../application/use-cases/services/UpdateServiceUseCase";
+import { FetchUserServicesUseCase } from "../../application/use-cases/users/FetchUserServices";
 
 export class ServiceController {
     constructor(
         private readonly createServiceUseCase: CreateServiceUseCase,
         private readonly findServiceByIdUseCase: FindServiceUseCase,
         private readonly fetchAllServicesUseCase: GetAllServicesUseCase,
-        private readonly updateServiceUseCase: UpdateServiceUseCase
+        private readonly updateServiceUseCase: UpdateServiceUseCase,
     ) { };
 
     async createService(req: Request, res: Response, next: NextFunction): Promise<void> {
