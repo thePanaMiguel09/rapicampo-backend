@@ -1,5 +1,4 @@
 import axios, { AxiosInstance } from "axios";
-import { error } from "console";
 
 
 export const createAuthServiceClient = (): AxiosInstance => {

@@ -9,13 +9,20 @@ import { createServiceRouter } from './presentation/routes/services.routes';
 import { createUserRouter } from './presentation/routes/users.routes';
 import { errorHandler, notFoundHandler } from './presentation/middleware/errorHandler';
 import dotenv from 'dotenv'
+import { createServer } from 'http';
+
 dotenv.config();
 
 const app = express();
-const PORT: number = parseInt(process.env.PORT || '4000', 10);
 
-app.use(cors());
-app.use(express.json());
+const httpServer = createServer(app);
+
+app.use(cors({
+    origin: process.env.FRONTEND_URL || 'http://localhost:5173',
+    credentials: true
+}));app.use(express.json());
+
+
 
 const httpCliente = createAuthServiceClient();
 const authServiceClient = new AuthServiceClient(httpCliente);
@@ -24,7 +31,11 @@ const authMiddleware = createAuthMiddleware(validateUserUseCase);
 
 
 app.get('/health', (_req, res) => {
-  res.json({ status: 'OK' });
+  res.status(200).json({
+    status: "ok",
+    servicio: "rapicampo",
+    version: "1.0.0"
+  });
 });
 
 app.use('/api/services', createServiceRouter(authMiddleware));
@@ -33,6 +44,6 @@ app.use('/api/users', createUserRouter(authMiddleware));
 app.use(notFoundHandler);
 app.use(errorHandler);
 
-app.listen(config.PORT, () => {
-  console.log(`Servidor escuchando en el puerto http://localhost:${PORT}`);
-})
+app.listen(config.PORT, '0.0.0.0', () => {
+  console.log(`Servidor Rappicampo listo en el puerto ${config.PORT}`);
+});

@@ -10,11 +10,11 @@ class DatabasePool {
     public static getInstace(): Pool {
         if (!DatabasePool.instace) {
             DatabasePool.instace = new Pool({
-                user: process.env.DB_USER,
-                host: process.env.DB_HOST,
-                database: process.env.DB_NAME,
-                password: process.env.DB_PASS,
-                port: parseInt(process.env.DB_PORT!)
+                host: process.env.POSTGRES_HOST,
+                port: parseInt(process.env.POSTGRES_PORT || "5433"),
+                user: process.env.POSTGRES_USER,
+                password: process.env.POSTGRES_PASSWORD,
+                database: process.env.POSTGRES_DB,
             })
         }
 
@@ -29,7 +29,7 @@ class DatabasePool {
             console.log('Conectado a PostgreSQL');
             poolClient.release();
         } catch (error) {
-            console.error('Error al conectar a PostgreSQL');
+            console.error('Error al conectar a PostgreSQL', error);
         }
     }
 }
