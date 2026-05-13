@@ -4,6 +4,7 @@ import { successResponse } from "../interfaces/ApiResponse";
 import { FindServiceUseCase } from "../../application/use-cases/services/FindServiceUseCase";
 import { GetAllServicesUseCase } from "../../application/use-cases/services/GetAllServicesUseCase";
 import { UpdateServiceUseCase } from "../../application/use-cases/services/UpdateServiceUseCase";
+import { AcceptServiceUseCase } from "../../application/use-cases/services/AcceptServiceUseCase";
 
 export class ServiceController {
     constructor(
@@ -11,7 +12,24 @@ export class ServiceController {
         private readonly findServiceByIdUseCase: FindServiceUseCase,
         private readonly fetchAllServicesUseCase: GetAllServicesUseCase,
         private readonly updateServiceUseCase: UpdateServiceUseCase,
+        private readonly acceptServiceUseCase: AcceptServiceUseCase
     ) { };
+
+    async acceptService(req: Request, res: Response, next: NextFunction): Promise<void> {
+        try {
+            const { id } = req.params;
+            const acceptingUserId = req.usuario!.id;
+            const acceptingUserName = req.usuario!.nombre || 'Usuario';
+
+            await this.acceptServiceUseCase.execute(id, acceptingUserId, acceptingUserName);
+            res.status(200).json(successResponse({
+                message: 'Servicio aceptado exitosamente'
+            }));
+
+        } catch (error) {
+            next(error);
+        }
+    }
 
     async createService(req: Request, res: Response, next: NextFunction): Promise<void> {
         try {
