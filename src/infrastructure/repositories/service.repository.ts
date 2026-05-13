@@ -5,6 +5,22 @@ import { ServiceState } from "../../domain/enums/service-state-enum";
 import { PaymentType } from "../../domain/enums/payment-type-enum";
 
 export class ServiceRepository implements IServiceRepository {
+    async accepetService(serviceId: string, acceptingUserId: string): Promise<void> {
+        try {
+            const query = `
+            UPDATE solicitudes.servicios
+            SET estado_servicio = $1,
+                id_usuario_aceptante = $2,
+                fecha_actualizacion = CURRENT_TIMESTAMP
+            WHERE pk_id_servicio = $3
+        `;
+
+            await connection.query(query, [ServiceState.EN_PROCESO, acceptingUserId, serviceId]);
+        } catch (error) {
+            console.error(error);
+            throw new Error('Error accepting service');
+        }
+    }
 
     private mapRowToService(row: any): Service {
         return new Service(
