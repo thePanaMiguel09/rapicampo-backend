@@ -10,6 +10,7 @@ import { createUserRouter } from './presentation/routes/users.routes';
 import { errorHandler, notFoundHandler } from './presentation/middleware/errorHandler';
 import dotenv from 'dotenv'
 import { createServer } from 'http';
+import { SocketServer } from './infrastructure/websocket/SocketServer';
 
 dotenv.config();
 
@@ -17,10 +18,12 @@ const app = express();
 
 const httpServer = createServer(app);
 
+const socketServer = new SocketServer(httpServer);
+
 app.use(cors({
-    origin: process.env.FRONTEND_URL || 'http://localhost:5173',
-    credentials: true
-}));app.use(express.json());
+  origin: process.env.FRONTEND_URL || 'http://localhost:5173',
+  credentials: true
+})); app.use(express.json());
 
 
 
@@ -38,12 +41,13 @@ app.get('/health', (_req, res) => {
   });
 });
 
-app.use('/api/services', createServiceRouter(authMiddleware));
+app.use('/api/services', createServiceRouter(authMiddleware, socketServer));
 app.use('/api/users', createUserRouter(authMiddleware));
 
 app.use(notFoundHandler);
 app.use(errorHandler);
 
-app.listen(config.PORT, '0.0.0.0', () => {
-  console.log(`Servidor Rappicampo listo en el puerto ${config.PORT}`);
+httpServer.listen(config.PORT, '0.0.0.0', () => {
+  console.log(`Servidor Rapicampo listo en el puerto ${config.PORT}`);
+  console.log(`WebSocket Server activo`);
 });
