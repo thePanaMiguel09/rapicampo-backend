@@ -18,20 +18,24 @@ export class CancelServiceUseCase {
             throw new NotFoundError('Servicio', serviceId);
         }
 
-        if (service.requesterUserId !== requestingUserId) {
-            throw new ForbiddenError('Solo el solicitante puede cancelar este servicio');
+        const isRequester = service.requesterUserId === requestingUserId;
+        const isAcceptor  = service.acceptorUserId  === requestingUserId;
+
+        if (!isRequester && !isAcceptor) {
+            throw new ForbiddenError('Solo el solicitante o el realizador pueden cancelar este servicio');
         }
 
         const cancelled = await this.serviceRepository.cancelService(serviceId, requestingUserId);
 
-        // Si había un aceptante, notificarle la cancelación
-        const aceptanteId = (service as unknown as Record<string, unknown>).id_usuario_aceptante as string | undefined;
-        if (aceptanteId) {
+        // Notificar a la otra parte
+        const recipientId = isAcceptor ? service.requesterUserId : service.acceptorUserId;
+        if (recipientId) {
+            const actorLabel = isAcceptor ? 'El realizador' : 'El solicitante';
             const notification = new Notification(
-                aceptanteId,
+                recipientId,
                 NotificationType.SERVICE_CANCELLED,
                 'Servicio cancelado',
-                'El solicitante ha cancelado el servicio que habías aceptado.',
+                `${actorLabel} ha cancelado el servicio.`,
                 serviceId,
             );
             await this.notificationService.sendNotification(notification);

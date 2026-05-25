@@ -14,6 +14,7 @@ export class Service {
         public updatedDate: Date | null,
         public postedDate?: Date | null,
         public readonly id?: string,
+        public acceptorUserId?: string | null,
     ) { };
 
     public isCashPayment():boolean {

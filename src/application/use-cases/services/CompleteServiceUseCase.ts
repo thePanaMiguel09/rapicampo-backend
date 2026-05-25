@@ -18,17 +18,20 @@ export class CompleteServiceUseCase {
             throw new NotFoundError('Servicio', serviceId);
         }
 
-        // Solo el solicitante puede marcar como completado
-        if (service.requesterUserId !== requestingUserId) {
-            throw new ForbiddenError('Solo el solicitante puede completar este servicio');
+        const isRequester = service.requesterUserId === requestingUserId;
+        const isAcceptor  = service.acceptorUserId  === requestingUserId;
+
+        if (!isRequester && !isAcceptor) {
+            throw new ForbiddenError('Solo el solicitante o el realizador pueden completar este servicio');
         }
 
         const completed = await this.serviceRepository.completeService(serviceId);
 
-        // Notificar al realizador si existe
-        if (service.requesterUserId) {
+        // Notificar a la otra parte
+        const recipientId = isAcceptor ? service.requesterUserId : service.acceptorUserId;
+        if (recipientId) {
             const notification = new Notification(
-                service.requesterUserId,
+                recipientId,
                 NotificationType.SERVICE_COMPLETED,
                 '¡Servicio completado!',
                 'El servicio ha sido marcado como completado exitosamente.',

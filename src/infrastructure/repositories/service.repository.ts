@@ -22,6 +22,7 @@ function mapRowToService(row: Record<string, unknown>): Service {
         (row.fecha_actualizacion as Date | null) ?? null,
         (row.fecha_publicacion as Date | null) ?? null,
         row.pk_id_servicio as string,
+        (row.id_usuario_aceptante as string | null) ?? null,
     );
 }
 
