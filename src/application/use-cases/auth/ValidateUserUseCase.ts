@@ -19,9 +19,11 @@ export class ValidateUserUseCase {
                     valido: true,
                     usuario: {
                         id: user.id,
+                        email: user.email,
                         nombre: user.nombre,
+                        apellido: user.apellido,
                         rol: user.role,
-                        telefono: user.telefono
+                        telefono: user.telefono,
                     }
                 }
 

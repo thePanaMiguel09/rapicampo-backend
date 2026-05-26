@@ -33,7 +33,7 @@ export class CancelServiceUseCase {
             const actorLabel = isAcceptor ? 'El realizador' : 'El solicitante';
             const notification = new Notification(
                 recipientId,
-                NotificationType.SERVICE_CANCELLED,
+                NotificationType.SERVICIO_CANCELADO,
                 'Servicio cancelado',
                 `${actorLabel} ha cancelado el servicio.`,
                 serviceId,

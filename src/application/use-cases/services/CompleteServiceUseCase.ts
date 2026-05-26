@@ -32,7 +32,7 @@ export class CompleteServiceUseCase {
         if (recipientId) {
             const notification = new Notification(
                 recipientId,
-                NotificationType.SERVICE_COMPLETED,
+                NotificationType.SERVICIO_COMPLETADO,
                 '¡Servicio completado!',
                 'El servicio ha sido marcado como completado exitosamente.',
                 serviceId,

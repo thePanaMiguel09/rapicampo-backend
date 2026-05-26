@@ -15,14 +15,20 @@ export class AuthServiceClient implements IAuthService {
                 }
             );
 
-            return {
-                id: response.data.id,
-                nombre: response.data.nombre,
-                role: response.data.rol,
-                telefono: response.data.telefono,
-                modulo: response.data.modulo ?? null,
-                creado_en: new Date(response.data.creado_en)
-            }
+            return new User(
+                response.data.id,
+                response.data.email,
+                response.data.nombre,
+                response.data.apellido,
+                response.data.rol,
+                response.data.telefono ?? null,
+                '',
+                true,
+                true,
+                new Date(),
+                null,
+                null,
+            )
 
         } catch (error: any) {
             if (error.response?.status === 401) {

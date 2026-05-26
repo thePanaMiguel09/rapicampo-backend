@@ -1,53 +1,56 @@
 import express from 'express';
 import cors from 'cors';
+import dotenv from 'dotenv';
+import { createServer } from 'http';
+
 import { config } from './infrastructure/config/env';
-import { createAuthServiceClient } from './infrastructure/api/axios.config';
-import { AuthServiceClient } from './infrastructure/http/AuthServiceClient';
+import { JwtService } from './infrastructure/services/JwtService';
 import { ValidateUserUseCase } from './application/use-cases/auth/ValidateUserUseCase';
 import { createAuthMiddleware } from './presentation/middleware/authMiddleware';
+import { createAuthRouter } from './presentation/routes/auth.routes';
 import { createServiceRouter } from './presentation/routes/services.routes';
 import { createUserRouter } from './presentation/routes/users.routes';
 import { errorHandler, notFoundHandler } from './presentation/middleware/errorHandler';
-import dotenv from 'dotenv'
-import { createServer } from 'http';
 import { SocketServer } from './infrastructure/websocket/SocketServer';
 
 dotenv.config();
 
 const app = express();
-
 const httpServer = createServer(app);
-
 const socketServer = new SocketServer(httpServer);
 
 app.use(cors({
-  origin: process.env.FRONTEND_URL || 'http://localhost:5173',
-  credentials: true
-})); app.use(express.json());
+    origin: process.env.FRONTEND_URL || 'http://localhost:5173',
+    credentials: true,
+}));
+app.use(express.json());
 
+const jwtService = new JwtService(
+    config.JWT_ACCESS_SECRET,
+    config.JWT_REFRESH_SECRET,
+    config.JWT_ACCESS_EXPIRES_IN,
+    config.JWT_REFRESH_EXPIRES_IN,
+);
 
-
-const httpCliente = createAuthServiceClient();
-const authServiceClient = new AuthServiceClient(httpCliente);
-const validateUserUseCase = new ValidateUserUseCase(authServiceClient);
+const validateUserUseCase = new ValidateUserUseCase(jwtService);
 const authMiddleware = createAuthMiddleware(validateUserUseCase);
 
-
 app.get('/health', (_req, res) => {
-  res.status(200).json({
-    status: "ok",
-    servicio: "rapicampo",
-    version: "1.0.0"
-  });
+    res.status(200).json({
+        status: 'ok',
+        servicio: 'rapicampo',
+        version: '1.0.0',
+    });
 });
 
+app.use('/api/auth',     createAuthRouter(jwtService));
 app.use('/api/services', createServiceRouter(authMiddleware, socketServer));
-app.use('/api/users', createUserRouter(authMiddleware));
+app.use('/api/users',    createUserRouter(authMiddleware));
 
 app.use(notFoundHandler);
 app.use(errorHandler);
 
 httpServer.listen(config.PORT, '0.0.0.0', () => {
-  console.log(`Servidor Rapicampo listo en el puerto ${config.PORT}`);
-  console.log(`WebSocket Server activo`);
+    console.log(`Servidor Rapicampo listo en el puerto ${config.PORT}`);
+    console.log(`WebSocket Server activo`);
 });

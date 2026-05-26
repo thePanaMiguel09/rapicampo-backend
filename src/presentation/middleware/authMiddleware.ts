@@ -7,8 +7,10 @@ declare global {
         interface Request {
             usuario?: {
                 id: string;
+                email: string;
                 nombre: string;
-                telefono: string;
+                apellido: string;
+                telefono: string | null;
                 rol: string;
             };
         }

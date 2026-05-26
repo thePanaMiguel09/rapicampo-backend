@@ -24,7 +24,7 @@ export class NotificationService implements INotificationService {
     async notifyServiceAccepted(serviceId: string, recipientUserId: string, acceptingUserName: string): Promise<void> {
         const notification = new Notification(
             recipientUserId,
-            NotificationType.SERVICE_ACCEPTED,
+            NotificationType.SERVICIO_ACEPTADO,
             '¡Tu servicio fue aceptado!',
             `${acceptingUserName} ha aceptado tu servicio`,
             serviceId
